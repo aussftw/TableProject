@@ -19,7 +19,7 @@ const Login: React.FC = () => {
   const classes = useStyles();
 
   const onSubmit = async () => {
-    dispatch(logIn(true, userData));
+    dispatch(logIn(true));
     setUserData({ login: '', password: '' });
     setOpen(false);
     await Router.push('/');

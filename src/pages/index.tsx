@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { UserType } from '../interfaces/index';
-import { Card, Typography, CardHeader, CardContent, CardActions, Divider, IconButton, Button } from '@material-ui/core';
-
 import { AppStateType } from '../redux/store';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Link from 'next/link';
-import styled from 'styled-components';
 
 import { getUsers } from '../redux/actions/usersAction';
 
+import { Typography } from '@material-ui/core';
+import TableDynamicContainer from '../components/TableContainer/TableContainer';
+import styled from 'styled-components';
+
 const IndexPage: React.FC = () => {
   const dispatch = useDispatch();
-  const users: [] = useSelector((state: AppStateType) => state.users.users);
+  useEffect(() => {
+    dispatch(getUsers());
+    console.log(localStorage.getItem('loggined'), 'storage');
+  }, []);
+
+  const users: Array<UserType> = useSelector((state: AppStateType) => state.users.users);
   const usersLoading: boolean = useSelector((state: AppStateType) => state.users.usersLoading);
   const isLoggined = useSelector((state: AppStateType) => state.login.isLogin);
 
@@ -26,82 +29,36 @@ const IndexPage: React.FC = () => {
     setCurrentPage(event.target.name);
   };
 
-  console.log(users);
-  console.log(isLoggined);
-  console.log(usersLoading, 'loading');
-
   // pagination logic
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
+  // const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
 
   // navigation buttons logic
 
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(users.length / itemsPerPage); i++) {
-    pageNumbers.push(i.toString());
-  }
+  // const pageNumbers = [];
+  // for (let i = 1; i <= Math.ceil(users.length / itemsPerPage); i++) {
+  //   pageNumbers.push(i.toString());
+  // }
 
-  useEffect(() => {
-    dispatch(getUsers());
-    console.log(localStorage.getItem('loggined'), 'storage');
-  }, []);
-
+  console.log(isLoggined, 'redux');
   return (
     <>
-      {usersLoading ? (
-        <>
-          <UsersWrapper>
-            {[...currentItems].map((user: UserType) => (
-              <User key={user.id}>
-                <Card>
-                  <CardHeader
-                    title={
-                      typeof user.name === 'undefined' || user.name === ''
-                        ? 'Oopps, looks like someone forgot about title.'
-                        : user.name.length > 50
-                        ? user.name.slice(0, 50) + '...'
-                        : `${user.name}  ${user.surname}`
-                    }
-                    style={{ backgroundColor: '#77a0a9', minHeight: '98px' }}
-                  />
-                  <CardContent style={{ minHeight: '170px' }}>
-                    <Typography>
-                      {typeof user.desc === 'undefined' || user.desc === '' ? 'Description not aveliable!' : user.desc}
-                    </Typography>
-                  </CardContent>
-                  <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Link href="/users/[userId]" as={`/users/${user.id}`}>
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
-                    </Link>
-                    <Divider orientation="vertical" variant="fullWidth" style={{ height: '40px', width: '2px' }} />
-                    <IconButton>
-                      <DeleteIcon />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </User>
-            ))}
-          </UsersWrapper>
-          <NavigationButtonsWrapper>
-            {pageNumbers.map((number: string) => (
-              <NavButton key={number} name={number} onClick={(e) => handleClick(e)}>
-                {number}
-              </NavButton>
-            ))}
-          </NavigationButtonsWrapper>
-        </>
+      {isLoggined ? (
+        usersLoading ? (
+          <LoaderWrapper>
+            <Typography style={{ fontSize: 24, fontWeight: 'bold' }}>Loading...</Typography>
+          </LoaderWrapper>
+        ) : (
+          // <LoaderWrapper>
+          <TableDynamicContainer users={users} />
+
+          // </LoaderWrapper>
+        )
       ) : (
         <LoaderWrapper>
-          <Typography style={{ fontSize: 24, fontWeight: 'bold' }}>Loading...</Typography>
-          <button
-            onClick={() => {
-              getUsers(), console.log('kekek');
-            }}
-          ></button>
+          <Typography style={{ fontSize: 24, fontWeight: 'bold' }}>You need to login</Typography>
         </LoaderWrapper>
       )}
     </>

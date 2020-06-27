@@ -1,5 +1,5 @@
 import * as constants from '../constants';
-import { AppAcationTypes } from '../actions/index';
+// import { AppAcationTypes } from '../actions/index';
 import { UserType } from '../../interfaces/index';
 
 const initialState = {
@@ -10,18 +10,18 @@ const initialState = {
   error: false,
 };
 
-const appReducer = (state = initialState, action: AppAcationTypes) => {
+const appReducer = (state = initialState, action: any) => {
   switch (action.type) {
-    case constants.SET_USERS_PENDING:
-      return {
-        ...state,
-        usersLoading: action.usersLoading,
-      };
-    case constants.SET_USERS:
-      return {
-        ...state,
-        users: action.users,
-      };
+    // case constants.SET_USERS_PENDING:
+    //   return {
+    //     ...state,
+    //     usersLoading: action.usersLoading,
+    //   };
+    // case constants.SET_USERS:
+    //   return {
+    //     ...state,
+    //     users: action.users,
+    //   };
     // case constants.SET_USER_PENDING:
     //   return {
     //     ...state,

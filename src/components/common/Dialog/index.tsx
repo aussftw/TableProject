@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { deleteUser } from '../../../redux/actions/index';
+// import { deleteUser } from '../../../redux/actions/index';
 import { useDispatch } from 'react-redux';
 import Router from 'next/router';
 import useStyles from './useSstyles';
@@ -14,7 +14,7 @@ const DialogComponent: React.FC<IdialogComponentProps> = (props) => {
   const classes = useStyles();
 
   const deleteUserWrapper = async () => {
-    dispatch(deleteUser(props.userId));
+    // dispatch(deleteUser(props.userId));
     await Router.push('/');
   };
 

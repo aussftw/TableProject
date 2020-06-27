@@ -1,14 +1,14 @@
 import { Typography, Card, CardHeader, CardContent, TextField, Button, IconButton, Box } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStateType } from '../../redux/store';
-import { editUser } from '../../redux/actions/index';
+// import { editUser } from '../../redux/actions/index';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Router from 'next/router';
 import useStyles from './useStyles';
 import { useState } from 'react';
 import DialogComponent from '../common/Dialog/index';
-import { CreationUserType } from '../../interfaces/index';
+// import { CreationUserType } from '../../interfaces/index';
 
 const UserDetails: React.FC = () => {
   const singleUser = useSelector((state: AppStateType) => state.app.singleUser);
@@ -26,7 +26,7 @@ const UserDetails: React.FC = () => {
   const id = singleUser.id;
 
   const editWrapper = async () => {
-    dispatch(editUser(id, userData.name, userData.surname, userData.desc));
+    // dispatch(editUser(id, userData.name, userData.surname, userData.desc));
     setUserData({ name: '', surname: '', desc: '' });
     await Router.push('/');
   };

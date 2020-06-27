@@ -12,14 +12,13 @@ export const SetLogin = (isLogin: boolean): LoginType => {
   };
 };
 
-export const logIn = (login: boolean, user: LoginUserType) => (dispatch: any) => {
+export const logIn = (login: boolean) => (dispatch: any) => {
   if (login === true) {
     localStorage.setItem('loggined', 'true');
-    localStorage.setItem('user', JSON.stringify(user));
     dispatch(SetLogin(login));
   } else {
     localStorage.setItem('loggined', 'false');
-    localStorage.removeItem('user');
+
     dispatch(SetLogin(login));
   }
 };

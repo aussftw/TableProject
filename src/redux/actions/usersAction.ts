@@ -4,7 +4,7 @@ import axios from 'axios';
 
 type SetUsersType = {
   type: typeof SET_USERS;
-  users: UserType;
+  users: Array<UserType>;
 };
 
 type SetUsersPendingType = {
@@ -16,7 +16,7 @@ type SetUsersFailedType = {
   type: typeof SET_USERS_FAILED;
   usersError: boolean;
 };
-export const setUsers = (users: UserType): SetUsersType => {
+export const setUsers = (users: Array<UserType>): SetUsersType => {
   return {
     type: SET_USERS,
     users,
@@ -43,7 +43,21 @@ export const getUsers = () => async (dispatch: any) => {
   try {
     const res = await axios.get('https://randomuser.me/api/?results=50');
     dispatch(setUsersPendning(false));
-    await dispatch(setUsers(res.data.results));
+    // const niceUsers = res.data.results.map((item) => {
+    //   const userName = item.name.first;
+    //   const userAge = item.dob.age;
+    //   const userId = item.login.uuid;
+    //   const userZalupa = '22';
+    // });
+    const niceUsers = res.data.results.map((item) => {
+      const user = {
+        userName: item.name.first,
+        age: item.dob.age,
+        ...item,
+      };
+      return user;
+    });
+    await dispatch(setUsers(niceUsers));
   } catch (error) {
     dispatch(setUsersFailed(true));
   }

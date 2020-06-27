@@ -4,10 +4,12 @@ export type LoginUserType = {
 };
 
 export type UserType = {
+  userName: string;
+  age: number;
   gender: string;
   name: {
     title: string;
-    fist: string;
+    first: string;
     last: string;
   };
 

@@ -2,7 +2,7 @@ export const SET_USER_PENDING = 'SET_USER_PENDING';
 export const GET_USER = 'GET_USER';
 export const SET_USER_FAILED = 'SET_USERS_FAILED';
 
-export const ERROR = 'ERROR';
+export const ERROR = 'ERROR'; // TODO: remove
 
 export const LOGIN = 'LOGIN';
 

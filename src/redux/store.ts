@@ -1,6 +1,6 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 // import thunkMiddleware from 'redux-thunk';
-import usersReducer from './reducers/app-reducer';
+import usersReducer from './reducers/usersReducer';
 import loginReducer from './reducers/login-reducer';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
