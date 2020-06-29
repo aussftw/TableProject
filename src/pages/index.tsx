@@ -13,10 +13,10 @@ const IndexPage: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUsers());
-    console.log(localStorage.getItem('loggined'), 'storage');
+    // console.log(localStorage.getItem('loggined'), 'storage');
   }, []);
 
-  const users: Array<UserType> = useSelector((state: AppStateType) => state.users.users);
+  // const users: Array<UserType> = useSelector((state: AppStateType) => state.users.users);
   const usersLoading: boolean = useSelector((state: AppStateType) => state.users.usersLoading);
   const isLoggined = useSelector((state: AppStateType) => state.login.isLogin);
 
@@ -42,7 +42,6 @@ const IndexPage: React.FC = () => {
   //   pageNumbers.push(i.toString());
   // }
 
-  console.log(isLoggined, 'redux');
   return (
     <>
       {isLoggined ? (
@@ -52,7 +51,7 @@ const IndexPage: React.FC = () => {
           </LoaderWrapper>
         ) : (
           // <LoaderWrapper>
-          <TableDynamicContainer users={users} />
+          <TableDynamicContainer />
 
           // </LoaderWrapper>
         )

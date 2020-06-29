@@ -24,42 +24,22 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import { UserType } from '../../interfaces/index';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUsers } from '../../redux/actions/usersAction';
-import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { sortUsers } from '../../redux/actions/usersAction';
 
-const TableDynamicContainer: React.FC<TableContainerProps> = (props) => {
+import Link from 'next/link';
+import { AppStateType } from '../../redux/store';
+
+const TableDynamicContainer: React.FC = () => {
   const dispatch = useDispatch();
 
-  const [sortConfig, setSortConfig] = useState<ISortConfig>({ key: '', direction: 'ascending' });
-  // const [selected, setSelected] = useState<boolean>(false);
+  const users: Array<UserType> = useSelector((state: AppStateType) => state.users.users);
+  const sortField: string = useSelector((state: AppStateType) => state.users.sortField);
+  const [direction, setDirection] = useState<boolean>(false);
 
-  const onSort = () => {
-    const sortedProducts: Array<UserType> = props.users;
-    sortedProducts.sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === 'ascending' ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === 'ascending' ? 1 : -1;
-      }
-      return 0;
-    });
-    console.log(sortConfig, 'iside');
-    dispatch(setUsers(sortedProducts));
+  const directionNavigator = (direction: boolean) => {
+    setDirection(!direction);
   };
-
-  const requestSort = (key: string | number) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-    // setSelected(!selected);
-  };
-
-  const arrow = sortConfig.direction === 'ascending' ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />;
-  console.log(sortConfig, 'arrow');
 
   return (
     <TableWarapper>
@@ -69,32 +49,19 @@ const TableDynamicContainer: React.FC<TableContainerProps> = (props) => {
             <TableRow>
               <TableCell
                 onClick={() => {
-                  requestSort('userName');
-                  onSort();
+                  directionNavigator(direction), dispatch(sortUsers('userName', direction, users));
                 }}
               >
                 Name
-                {sortConfig.key === 'userName' ? (
-                  sortConfig.direction === 'ascending' ? (
-                    <ArrowDownwardIcon />
-                  ) : (
-                    <ArrowUpwardIcon />
-                  )
-                ) : null}
+                {sortField === 'userName' ? direction === true ? <ArrowDownwardIcon /> : <ArrowUpwardIcon /> : null}
               </TableCell>
               <TableCell
                 onClick={() => {
-                  requestSort('age'), onSort();
+                  directionNavigator(direction), dispatch(sortUsers('age', direction, users));
                 }}
               >
                 Age
-                {sortConfig.key === 'age' ? (
-                  sortConfig.direction === 'ascending' ? (
-                    <ArrowUpwardIcon />
-                  ) : (
-                    <ArrowDownwardIcon />
-                  )
-                ) : null}
+                {sortField === 'age' ? direction === true ? <ArrowUpwardIcon /> : <ArrowDownwardIcon /> : null}
               </TableCell>
               <TableCell>Gender</TableCell>
               <TableCell>Location</TableCell>
@@ -104,7 +71,7 @@ const TableDynamicContainer: React.FC<TableContainerProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.users.map((item) => (
+            {users.map((item) => (
               <TableRow key={item.login.uuid}>
                 <TableCell> {item.userName}</TableCell>
                 <TableCell> {item.age}</TableCell>
@@ -127,15 +94,6 @@ const TableDynamicContainer: React.FC<TableContainerProps> = (props) => {
 };
 
 export default TableDynamicContainer;
-
-interface TableContainerProps {
-  users: Array<UserType>;
-}
-
-interface ISortConfig {
-  key: string | number;
-  direction: string;
-}
 
 const TableWarapper = styled.div`
   margin-top: 10rem;

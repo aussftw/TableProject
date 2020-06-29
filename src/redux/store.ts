@@ -17,4 +17,6 @@ export type AppStateType = ReturnType<typeof rootReducer>;
 
 const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
+console.log(store.getState(), '<<< STORE');
+
 export default store;

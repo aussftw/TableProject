@@ -1,4 +1,4 @@
-import { SET_USERS_PENDING, SET_USERS, SET_USERS_FAILED } from '../constants';
+import { SET_USERS_PENDING, SET_USERS, SET_USERS_FAILED, SET_SORT_DIRECTION, SET_SORT_FIELD } from '../constants';
 import { UserType } from '../../interfaces';
 import axios from 'axios';
 
@@ -15,6 +15,16 @@ type SetUsersPendingType = {
 type SetUsersFailedType = {
   type: typeof SET_USERS_FAILED;
   usersError: boolean;
+};
+
+type SetSortFieldType = {
+  type: typeof SET_SORT_FIELD;
+  sortField: string;
+};
+
+type SetSortDirectionType = {
+  type: typeof SET_SORT_DIRECTION;
+  sortDirectionAscending: boolean;
 };
 export const setUsers = (users: Array<UserType>): SetUsersType => {
   return {
@@ -37,19 +47,46 @@ export const setUsersFailed = (usersError: boolean): SetUsersFailedType => {
   };
 };
 
+export const setSortField = (sortField: string): SetSortFieldType => {
+  return {
+    type: SET_SORT_FIELD,
+    sortField,
+  };
+};
+
+export const setSortDirection = (sortDirectionAscending: boolean): SetSortDirectionType => {
+  return {
+    type: SET_SORT_DIRECTION,
+    sortDirectionAscending,
+  };
+};
+
+export const sortUsers = (sortField: string, sortDirectionAscending: boolean, users: Array<UserType>) => (
+  dispatch: any
+) => {
+  console.log(sortField, 'field', sortDirectionAscending, 'dire');
+  dispatch(setSortField(sortField));
+  dispatch(setSortDirection(sortDirectionAscending));
+
+  users.sort((a, b) => {
+    if (a[sortField] < b[sortField]) {
+      return sortDirectionAscending === true ? -1 : 1;
+    }
+    if (a[sortField] > b[sortField]) {
+      return sortDirectionAscending === true ? 1 : -1;
+    }
+    return 0;
+  });
+  dispatch(setUsers(users));
+};
+
 export const getUsers = () => async (dispatch: any) => {
-  dispatch(setUsersFailed(false));
-  dispatch(setUsersPendning(true));
+  setUsersFailed(false);
+  setUsersPendning(true);
   try {
     const res = await axios.get('https://randomuser.me/api/?results=50');
     dispatch(setUsersPendning(false));
-    // const niceUsers = res.data.results.map((item) => {
-    //   const userName = item.name.first;
-    //   const userAge = item.dob.age;
-    //   const userId = item.login.uuid;
-    //   const userZalupa = '22';
-    // });
-    const niceUsers = res.data.results.map((item) => {
+    const niceUsers = res.data.results.map((item: any) => {
       const user = {
         userName: item.name.first,
         age: item.dob.age,
@@ -59,8 +96,13 @@ export const getUsers = () => async (dispatch: any) => {
     });
     await dispatch(setUsers(niceUsers));
   } catch (error) {
-    dispatch(setUsersFailed(true));
+    setUsersFailed(true);
   }
 };
 
-export type UsersActionType = SetUsersFailedType | SetUsersType | SetUsersPendingType;
+export type UsersActionType =
+  | SetUsersFailedType
+  | SetUsersType
+  | SetUsersPendingType
+  | SetSortDirectionType
+  | SetSortFieldType;
