@@ -1,10 +1,5 @@
 import { LOGIN } from '../constants/index';
-import { LoginUserType } from '../../interfaces/index';
 
-type LoginType = {
-  type: typeof LOGIN;
-  isLogin: boolean;
-};
 export const SetLogin = (isLogin: boolean): LoginType => {
   return {
     type: LOGIN,
@@ -21,6 +16,11 @@ export const logIn = (login: boolean) => (dispatch: any) => {
 
     dispatch(SetLogin(login));
   }
+};
+
+type LoginType = {
+  type: typeof LOGIN;
+  isLogin: boolean;
 };
 
 export type LoginActionType = LoginType;

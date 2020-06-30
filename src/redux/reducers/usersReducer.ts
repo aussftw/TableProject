@@ -1,4 +1,11 @@
-import { SET_USERS_PENDING, SET_USERS, SET_USERS_FAILED, SET_SORT_DIRECTION, SET_SORT_FIELD } from '../constants/index';
+import {
+  SET_USERS_PENDING,
+  SET_USERS,
+  SET_USERS_FAILED,
+  SET_SORT_DIRECTION,
+  SET_SORT_FIELD,
+  SET_SEARCH_RESULTS,
+} from '../constants/index';
 import { UsersActionType } from '../actions/usersAction';
 import { UserType } from '../../interfaces/index';
 
@@ -8,6 +15,8 @@ const initialState = {
   usersError: false,
   sortDirectionAscending: true,
   sortField: 'userName',
+  searchField: '',
+  searchResult: [] as Array<UserType>,
 };
 
 const appReducer = (state = initialState, action: UsersActionType) => {
@@ -28,6 +37,12 @@ const appReducer = (state = initialState, action: UsersActionType) => {
         error: action.usersError,
       };
 
+    case SET_SEARCH_RESULTS:
+      return {
+        ...state,
+        searchResult: action.searchResult,
+      };
+
     case SET_SORT_FIELD:
       return {
         ...state,
@@ -37,7 +52,7 @@ const appReducer = (state = initialState, action: UsersActionType) => {
     case SET_SORT_DIRECTION:
       return {
         ...state,
-        sortDirection: action.sortDirection,
+        sortDirectionAscending: action.sortDirectionAscending,
       };
     default:
       return state;

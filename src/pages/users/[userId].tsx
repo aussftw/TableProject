@@ -1,36 +1,23 @@
-import { Typography } from '@material-ui/core';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AppStateType } from '../../redux/store';
-import { getSingleUser } from '../../redux/actions/index';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import UserDetails from '../../components/UserDetails/UserDetails';
 import { LoaderWrapper } from '../index';
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
 
 const User: React.FC = () => {
-  const dispatch = useDispatch();
-  const userLoading = useSelector((state: AppStateType) => state.app.userLoading);
-
-  const router = useRouter();
-  const userId = typeof router.query.userId === 'string' && router.query.userId;
-
-  useEffect(() => {
-    if (userId) {
-      dispatch(getSingleUser(userId));
-    }
-  }, [userId]);
+  const isLoggined = useSelector((state: AppStateType) => state.login.isLogin);
 
   return (
     <>
-      {userLoading ? (
-        <LoaderWrapper>
-          <Typography style={{ fontSize: 24, fontWeight: 'bold' }}>Loading...</Typography>
-        </LoaderWrapper>
-      ) : (
+      {isLoggined ? (
         <Wrapper>
           <UserDetails />
         </Wrapper>
+      ) : (
+        <LoaderWrapper>
+          <Typography style={{ fontSize: 24, fontWeight: 'bold' }}>You need to login</Typography>
+        </LoaderWrapper>
       )}
     </>
   );

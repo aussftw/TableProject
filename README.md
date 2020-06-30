@@ -1,5 +1,5 @@
-#  Userslist test task
-Simple representation of CRUD
+#  TableProject test task
+For interaction with users data, you need to login.
 
 
 ## Usage

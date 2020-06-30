@@ -1,50 +1,68 @@
-import clsx from 'clsx';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { Paper, Button } from '@material-ui/core';
-
-import styled from 'styled-components';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import { UserType } from '../../interfaces/index';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { sortUsers } from '../../redux/actions/usersAction';
-
 import Link from 'next/link';
+import {
+  Paper,
+  Button,
+  Input,
+  TableHead,
+  TableContainer,
+  TableCell,
+  TableBody,
+  Table,
+  TableRow,
+  IconButton,
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+
+import { UserType } from '../../interfaces/index';
 import { AppStateType } from '../../redux/store';
+import { sortUsers, searchUser } from '../../redux/actions/usersAction';
+import { setSingleUser } from '../../redux/actions/userAction';
+import styled from 'styled-components';
 
 const TableDynamicContainer: React.FC = () => {
   const dispatch = useDispatch();
 
   const users: Array<UserType> = useSelector((state: AppStateType) => state.users.users);
   const sortField: string = useSelector((state: AppStateType) => state.users.sortField);
+  const searchResults: Array<UserType> = useSelector((state: AppStateType) => state.users.searchResult);
+  const [searchField, setSearcField] = useState<string>('');
   const [direction, setDirection] = useState<boolean>(false);
 
   const directionNavigator = (direction: boolean) => {
     setDirection(!direction);
   };
 
+  const inputSubmit = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      dispatch(searchUser(searchField, users));
+    }
+  };
+
   return (
     <TableWarapper>
+      <SearchWrapper>
+        <ContnentContainer>
+          <p>Users</p>
+          <div>
+            <Input
+              onChange={(e) => setSearcField(e.target.value)}
+              onKeyPress={(e) => inputSubmit(e)}
+              placeholder="search"
+            />
+
+            <IconButton onClick={() => dispatch(searchUser(searchField, users))}>
+              <SearchIcon />
+            </IconButton>
+          </div>
+        </ContnentContainer>
+      </SearchWrapper>
+
       <TableContainer component={Paper}>
-        <Table aria-label="simple table">
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell
@@ -52,16 +70,25 @@ const TableDynamicContainer: React.FC = () => {
                   directionNavigator(direction), dispatch(sortUsers('userName', direction, users));
                 }}
               >
-                Name
-                {sortField === 'userName' ? direction === true ? <ArrowDownwardIcon /> : <ArrowUpwardIcon /> : null}
+                <CellWrapper>
+                  Last name
+                  <IconWrapper>
+                    {sortField === 'userName' ? direction === true ? <ArrowDownwardIcon /> : <ArrowUpwardIcon /> : null}
+                  </IconWrapper>
+                </CellWrapper>
               </TableCell>
               <TableCell
+                //TODO: add searchResults here
                 onClick={() => {
                   directionNavigator(direction), dispatch(sortUsers('age', direction, users));
                 }}
               >
-                Age
-                {sortField === 'age' ? direction === true ? <ArrowUpwardIcon /> : <ArrowDownwardIcon /> : null}
+                <CellWrapper>
+                  Age
+                  <IconWrapper>
+                    {sortField === 'age' ? direction === true ? <ArrowUpwardIcon /> : <ArrowDownwardIcon /> : null}
+                  </IconWrapper>
+                </CellWrapper>
               </TableCell>
               <TableCell>Gender</TableCell>
               <TableCell>Location</TableCell>
@@ -71,21 +98,38 @@ const TableDynamicContainer: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((item) => (
-              <TableRow key={item.login.uuid}>
-                <TableCell> {item.userName}</TableCell>
-                <TableCell> {item.age}</TableCell>
-                <TableCell>{item.gender}</TableCell>
-                <TableCell> {item.location.country}</TableCell>
-                <TableCell> {item.phone}</TableCell>
-                <TableCell> {item.cell}</TableCell>
-                <TableCell>
-                  <Link href="/users/[userId]" as={`/users/${item.login.uiid}`}>
-                    <Button>Подробнее</Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+            {searchField.length > 0
+              ? searchResults.map((item) => (
+                  <TableRow key={item.login.uuid}>
+                    <TableCell> {item.userName}</TableCell>
+                    <TableCell> {item.age}</TableCell>
+                    <TableCell>{item.gender}</TableCell>
+                    <TableCell> {item.location.country}</TableCell>
+                    <TableCell> {item.phone}</TableCell>
+                    <TableCell> {item.cell}</TableCell>
+                    <TableCell>
+                      <Link href="/users/[userId]" as={`/users/${item.login.uiid}`}>
+                        <Button>Подробнее</Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))
+              : users.map((item) => (
+                  <TableRow key={item.login.uuid}>
+                    <TableCell> {item.userName}</TableCell>
+                    <TableCell> {item.age}</TableCell>
+                    <TableCell>{item.gender}</TableCell>
+                    <TableCell> {item.location.country}</TableCell>
+                    <TableCell> {item.phone}</TableCell>
+                    <TableCell> {item.cell}</TableCell>
+
+                    <TableCell>
+                      <Link href="/users/[userId]" as={`/users/${item.login.uuid}`}>
+                        <Button onClick={() => dispatch(setSingleUser(item))}>Подробнее</Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -96,5 +140,35 @@ const TableDynamicContainer: React.FC = () => {
 export default TableDynamicContainer;
 
 const TableWarapper = styled.div`
-  margin-top: 10rem;
+  margin-top: 4.5rem;
+`;
+
+const SearchWrapper = styled.div`
+  border-collapse: collapse;
+  border-radius: 4px 4px 0 0;
+  background-color: #fff;
+  border-top-color: rgb(128, 128, 128)
+  border-left-color: rgb(128, 128, 128)
+  border-right-color: rgb(128,128, 128)
+  box-sizing: border-box;
+  box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+`;
+
+const ContnentContainer = styled.div`
+  margin: 0 1rem;
+  padding: 0.3rem 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+`;
+
+const CellWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+`;
+
+const IconWrapper = styled.div`
+  margin: 0px 0px 3px 3px;
 `;

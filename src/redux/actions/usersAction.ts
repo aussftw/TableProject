@@ -1,6 +1,7 @@
 import { SET_USERS_PENDING, SET_USERS, SET_USERS_FAILED, SET_SORT_DIRECTION, SET_SORT_FIELD } from '../constants';
 import { UserType } from '../../interfaces';
 import axios from 'axios';
+import { SEARCH_USER, SET_SEARCH_RESULTS } from '../constants/index';
 
 type SetUsersType = {
   type: typeof SET_USERS;
@@ -25,6 +26,16 @@ type SetSortFieldType = {
 type SetSortDirectionType = {
   type: typeof SET_SORT_DIRECTION;
   sortDirectionAscending: boolean;
+};
+
+type SetSearchUserType = {
+  type: typeof SEARCH_USER;
+  searchField: string;
+};
+
+type SetSearchUserResultType = {
+  type: typeof SET_SEARCH_RESULTS;
+  searchResult: Array<UserType>;
 };
 export const setUsers = (users: Array<UserType>): SetUsersType => {
   return {
@@ -61,23 +72,40 @@ export const setSortDirection = (sortDirectionAscending: boolean): SetSortDirect
   };
 };
 
+export const setSearchUser = (searchField: string): SetSearchUserType => {
+  return {
+    type: SEARCH_USER,
+    searchField,
+  };
+};
+
+export const setSearchResult = (searchResult: Array<UserType>): SetSearchUserResultType => {
+  return {
+    type: SET_SEARCH_RESULTS,
+    searchResult,
+  };
+};
+
 export const sortUsers = (sortField: string, sortDirectionAscending: boolean, users: Array<UserType>) => (
   dispatch: any
 ) => {
-  console.log(sortField, 'field', sortDirectionAscending, 'dire');
   dispatch(setSortField(sortField));
   dispatch(setSortDirection(sortDirectionAscending));
 
   users.sort((a, b) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     if (a[sortField] < b[sortField]) {
       return sortDirectionAscending === true ? -1 : 1;
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     if (a[sortField] > b[sortField]) {
       return sortDirectionAscending === true ? 1 : -1;
     }
     return 0;
   });
-  dispatch(setUsers(users));
+  setUsers(users);
 };
 
 export const getUsers = () => async (dispatch: any) => {
@@ -88,7 +116,7 @@ export const getUsers = () => async (dispatch: any) => {
     dispatch(setUsersPendning(false));
     const niceUsers = res.data.results.map((item: any) => {
       const user = {
-        userName: item.name.first,
+        userName: item.name.last,
         age: item.dob.age,
         ...item,
       };
@@ -100,9 +128,16 @@ export const getUsers = () => async (dispatch: any) => {
   }
 };
 
+export const searchUser = (searchField: string, users: Array<UserType>) => (dispatch: any) => {
+  const searchResult = users.filter((item) => item['userName'].toLowerCase().includes(searchField.toLowerCase()));
+  dispatch(setSearchResult(searchResult));
+};
+
 export type UsersActionType =
   | SetUsersFailedType
   | SetUsersType
   | SetUsersPendingType
   | SetSortDirectionType
-  | SetSortFieldType;
+  | SetSortFieldType
+  | SetSearchUserType
+  | SetSearchUserResultType;
