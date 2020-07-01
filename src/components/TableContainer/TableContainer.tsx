@@ -113,7 +113,7 @@ const TableDynamicContainer: React.FC = () => {
                     <TableCell> {item.cell}</TableCell>
                     <TableCell>
                       <Link href="/users/[userId]" as={`/users/${item.login.uiid}`}>
-                        <Button>Подробнее</Button>
+                        <Button onClick={() => dispatch(setSingleUser(item))}>Подробнее</Button>
                       </Link>
                     </TableCell>
                   </TableRow>
