@@ -129,6 +129,8 @@ export const getUsers = () => async (dispatch: any) => {
 };
 
 export const searchUser = (searchField: string, users: Array<UserType>) => (dispatch: any) => {
+  // searchfield
+  dispatch(setSearchUser(searchField));
   const searchResult = users.filter((item) => item['userName'].toLowerCase().includes(searchField.toLowerCase()));
   dispatch(setSearchResult(searchResult));
 };

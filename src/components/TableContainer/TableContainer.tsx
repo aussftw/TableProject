@@ -52,7 +52,9 @@ const TableDynamicContainer: React.FC = () => {
           <p>Users</p>
           <div>
             <TextField
-              onChange={(e) => setSearcField(e.target.value)}
+              onChange={(e) => {
+                dispatch(searchUser(e.target.value, users)), setSearcField(e.target.value);
+              }}
               onKeyPress={(e) => inputSubmit(e)}
               placeholder="search"
               className={classes.textField}
