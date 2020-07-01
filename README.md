@@ -1,6 +1,7 @@
 #  TableProject test task
-For interaction with users data, you need to login.
-You can sort users by Last name and Age. You can find  any user by name.
+For interaction with users data, you need to login.  
+You can sort users by Last name and Age.  
+You can find any user by name.  
 
 ## Usage
 
