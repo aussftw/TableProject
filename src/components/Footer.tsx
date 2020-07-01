@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     <FooterWrapper>
       <ContentWrapper>
         <Link href="/">
-          <LinkWrapper>Users List</LinkWrapper>
+          <LinkWrapper>Table Project</LinkWrapper>
         </Link>
         <Copy>Alexander Kaminskiy &copy; 2020</Copy>
       </ContentWrapper>

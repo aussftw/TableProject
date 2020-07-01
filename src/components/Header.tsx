@@ -21,7 +21,7 @@ const Header: React.FC = () => {
       <StyledHeader>
         <ButtonsWrapper>
           <Link href="/">
-            <UsersButton>Users List</UsersButton>
+            <UsersButton>Table Project</UsersButton>
           </Link>
 
           {isLoggined ? (

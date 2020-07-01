@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   Paper,
   Button,
-  Input,
+  TextField,
   TableHead,
   TableContainer,
   TableCell,
@@ -22,6 +22,7 @@ import { AppStateType } from '../../redux/store';
 import { sortUsers, searchUser } from '../../redux/actions/usersAction';
 import { setSingleUser } from '../../redux/actions/userAction';
 import styled from 'styled-components';
+import useStyles from './useStyles';
 
 const TableDynamicContainer: React.FC = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ const TableDynamicContainer: React.FC = () => {
   const searchResults: Array<UserType> = useSelector((state: AppStateType) => state.users.searchResult);
   const [searchField, setSearcField] = useState<string>('');
   const [direction, setDirection] = useState<boolean>(false);
+
+  const classes = useStyles();
 
   const directionNavigator = (direction: boolean) => {
     setDirection(!direction);
@@ -48,10 +51,11 @@ const TableDynamicContainer: React.FC = () => {
         <ContnentContainer>
           <p>Users</p>
           <div>
-            <Input
+            <TextField
               onChange={(e) => setSearcField(e.target.value)}
               onKeyPress={(e) => inputSubmit(e)}
               placeholder="search"
+              className={classes.textField}
             />
 
             <IconButton onClick={() => dispatch(searchUser(searchField, users))}>

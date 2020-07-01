@@ -9,13 +9,12 @@ type Props = {
   title?: string;
 };
 
-const LayoutContainer: React.FC<Props> = ({ children, title = 'Users list' }) => (
+const LayoutContainer: React.FC<Props> = ({ children, title = 'Table Project' }) => (
   <div>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      {/* <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> */}
     </Head>
     <Header />
     <CssBaseline />
